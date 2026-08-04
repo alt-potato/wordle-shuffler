@@ -4,12 +4,14 @@ import (
 	"fmt"
 	"os"
 
+	"alt-potato/wordle-shuffler/internal/tui"
+
 	"golang.org/x/term"
 )
 
 func main() {
 	termW, termH, _ := term.GetSize(int(os.Stdout.Fd()))
-	screen := NewScreen(termW, termH)
+	screen := tui.NewScreen(termW, termH)
 
 	screen.Set(0, 0, 'h', -1, -1)
 	screen.Set(1, 1, 'i', -1, -1)
