@@ -5,13 +5,6 @@ import (
 	"strings"
 )
 
-// ref: https://gist.github.com/fnky/458719343aabd01cfb17a3a4f7296797
-const (
-	esc         = "\x1B"
-	clearScreen = esc + "[2J"
-	home        = esc + "[H"
-)
-
 type Cell struct {
 	Rune rune
 	Fg   int

@@ -1,22 +1,31 @@
 package main
 
 import (
+	"fmt"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
 
 	"alt-potato/wordle-shuffler/internal/tui"
-
-	"golang.org/x/term"
 )
 
 func main() {
-	termW, termH, _ := term.GetSize(int(os.Stdout.Fd()))
+	termState, err := tui.NewTerminal()
+	if err != nil {
+		fmt.Println("Could not create terminal: " + err.Error())
+	}
+	defer termState.Close()
 
-	// signal handler for cmd-c exit
+	termW, termH, _ := termState.TermSize()
+
+	// signal handler for forced exit
+	// probably won't capture ctrl-c, since we're in raw mode
 	sigCh := make(chan os.Signal, 1)
 	signal.Notify(sigCh, syscall.SIGINT, syscall.SIGTERM)
+
+	// stdin read and ctrl-c routing
+	tui.SetupInput(sigCh)
 
 	screen := tui.NewScreen(termW, termH)
 
