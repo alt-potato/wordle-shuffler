@@ -60,5 +60,7 @@ func (s *Screen) Render() {
 		}
 	}
 
+	out.WriteString(resetModes) // reset attributes
+
 	os.Stdout.WriteString(out.String())
 }

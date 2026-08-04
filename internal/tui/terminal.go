@@ -15,6 +15,7 @@ const (
 
 	clearScreen = string(rune(ESC)) + "[2J"
 	home        = string(rune(ESC)) + "[H"
+	resetModes  = string(rune(ESC)) + "[0m"
 
 	hideCursor       = string(rune(ESC)) + "[?25l"
 	showCursor       = string(rune(ESC)) + "[?25h"
