@@ -10,6 +10,7 @@ import (
 	"alt-potato/wordle-shuffler/internal/tui"
 )
 
+// heh. mango.
 func main() {
 	termState, err := tui.NewTerminal()
 	if err != nil {
@@ -28,6 +29,7 @@ func main() {
 	tui.SetupInput(sigCh)
 
 	screen := tui.NewScreen(termW, termH)
+	prevScreen := screen.Clone()
 
 	// start tick loop
 	const fps = 12
@@ -43,11 +45,13 @@ main:
 		case <-sigCh:
 			break main
 		case <-ticker.C:
+			// render!
 			frameCount++
 
 			setDemo(screen, frameCount)
 
-			screen.Render()
+			screen.RenderDelta(prevScreen)
+			screen.Swap(prevScreen)
 		}
 	}
 }

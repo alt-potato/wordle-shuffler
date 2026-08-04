@@ -61,6 +61,69 @@ func (s *Screen) Render() {
 	}
 
 	out.WriteString(resetModes) // reset attributes
-
 	os.Stdout.WriteString(out.String())
+}
+
+// Same as Render(), but only renders the per-cell differences from the last screen.
+func (s *Screen) RenderDelta(prev *Screen) {
+	var out strings.Builder
+	out.WriteString(home) // no clear
+
+	// track cursor position for jumps
+	cursorRow, cursorCol := 0, 0
+
+	for row := 0; row < s.height; row++ {
+		for col := 0; col < s.width; col++ {
+			currVal := s.cells[row][col]
+			prevVal := prev.cells[row][col]
+
+			if currVal == prevVal {
+				continue // skip
+			}
+
+			// can't assume cursor is in the right place since skips occur
+			if row != cursorRow || col != cursorRow {
+				out.WriteString(moveCursor(row, col))
+			}
+
+			out.WriteRune(currVal.Rune)
+			cursorCol++
+		}
+
+		// no newline on last line (causes cutoff of first line)
+		if row < s.height - 1 {
+			out.WriteString("\r\n")
+		}
+	}
+
+	out.WriteString(resetModes) // reset attributes
+	os.Stdout.WriteString(out.String())
+}
+
+// Creates a deep copy of the current Screen.
+func (s *Screen) Clone() *Screen {
+	clone := NewScreen(s.width, s.height)
+	for row := 0; row < s.height; row++ {
+		copy(clone.cells[row], s.cells[row])
+	}
+
+	return clone
+}
+
+// Clears the current Screen. 
+func (s *Screen) Clear() {
+	for i := range s.cells {
+		for j := range s.cells[i] {
+			s.cells[i][j] = Cell{Rune: ' ', Fg: -1, Bg: -1}
+		}
+	}
+}
+
+// Swaps the given screen buffer with the current, the clears the current buffer.
+//
+// In effect, the content of the current buffer is moved to the previous buffer, and then
+// cleared in preparation for the next frame.
+func (s *Screen) Swap(prev *Screen) {
+	prev, s = s, prev
+	s.Clear()
 }

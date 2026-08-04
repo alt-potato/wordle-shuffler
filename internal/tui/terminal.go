@@ -23,6 +23,11 @@ const (
 	disableAltBuffer = "\x1B[?1049l"
 )
 
+// Helper method to move the cursor to the given position using escape sequences.
+func moveCursor(row, col int) string {
+	return fmt.Sprintf("\x1B[%d;%dH", row+1, col+1)
+}
+
 type TerminalState struct {
 	fd int
 	oldTermState *term.State
