@@ -13,14 +13,14 @@ const (
 	ETX = 0x03
 	ESC = 0x1B
 
-	clearScreen = string(rune(ESC)) + "[2J"
-	home        = string(rune(ESC)) + "[H"
-	resetModes  = string(rune(ESC)) + "[0m"
+	clearScreen = "\x1B[2J"
+	home        = "\x1B[H"
+	resetModes  = "\x1B[0m"
 
-	hideCursor       = string(rune(ESC)) + "[?25l"
-	showCursor       = string(rune(ESC)) + "[?25h"
-	enableAltBuffer  = string(rune(ESC)) + "[?1049h"
-	disableAltBuffer = string(rune(ESC)) + "[?1049l"
+	hideCursor       = "\x1B[?25l"
+	showCursor       = "\x1B[?25h"
+	enableAltBuffer  = "\x1B[?1049h"
+	disableAltBuffer = "\x1B[?1049l"
 )
 
 type TerminalState struct {
