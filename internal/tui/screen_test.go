@@ -32,14 +32,31 @@ func TestInitialContent(t *testing.T) {
 	}
 }
 
+// sanity check cell for getter/setter
+func TestSetGet(t *testing.T) {
+    s := NewScreen(5, 5)
+    s.SetCell(2, 0, 'A', 31, 42)
+    
+    cell := s.Cell(2, 0)
+	if cell != s.cells[2][0] {
+		t.Errorf("Getter output did not match direct access: expected %q, got %q", s.cells[2][0].Rune, cell.Rune)
+	}
+    if cell.Rune != 'A' {
+        t.Errorf("Expected 'A', got %q", cell.Rune)
+    }
+    if cell.Fg != 31 || cell.Bg != 42 {
+        t.Errorf("Expected Fg=31 Bg=42, got Fg=%d Bg=%d", cell.Fg, cell.Bg)
+    }
+}
+
 // ensure oob writes are ignored and do not panic
 func TestOutOfBounds(t *testing.T) {
 	s := NewScreen(10, 5)
 
-	s.Set(-1, 0, 'X', -1, -1)  // row too low
-    s.Set(5, 0, 'X', -1, -1)   // row too high
-    s.Set(0, -1, 'X', -1, -1)  // col too low
-    s.Set(0, 10, 'X', -1, -1)  // col too high
+	s.SetCell(-1, 0, 'X', -1, -1)  // row too low
+    s.SetCell(5, 0, 'X', -1, -1)   // row too high
+    s.SetCell(0, -1, 'X', -1, -1)  // col too low
+    s.SetCell(0, 10, 'X', -1, -1)  // col too high
 
 	for r := 0; r < s.height; r++ {
 		for c := 0; c < s.width; c++ {
@@ -55,7 +72,7 @@ func TestOutOfBounds(t *testing.T) {
 func TestUnicodeHandling(t *testing.T) {
 	s := NewScreen(3, 3)
 
-	s.Set(1, 1, 'é', -1, -1) // multi-byte UTF-8 character
+	s.SetCell(1, 1, 'é', -1, -1) // multi-byte UTF-8 character
 
 	cell := s.cells[1][1]
 	if cell.Rune != 'é' {

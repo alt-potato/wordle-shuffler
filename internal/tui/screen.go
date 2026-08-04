@@ -35,9 +35,20 @@ func NewScreen(w, h int) *Screen {
 	return &Screen{w, h, cells}
 }
 
-func (s *Screen) Set(r, c int, ch rune, fg, bg int) {
+// sets a specific cell coordinate, ignoring out-of-bounds coordinates.
+func (s *Screen) SetCell(r, c int, ch rune, fg, bg int) {
 	if r >= 0 && r < s.height && c >= 0 && c < s.width {
 		s.cells[r][c] = Cell{Rune: ch, Fg: fg, Bg: bg}
+	}
+}
+
+// returns a shallow copy of the cell at the given coordinates, 
+// or an empty cell if out-of-bounds.
+func (s *Screen) Cell(r, c int) Cell {
+	if r >= 0 && r < s.height && c >= 0 && c < s.width {
+		return s.cells[r][c]
+	} else {
+		return Cell{}
 	}
 }
 
