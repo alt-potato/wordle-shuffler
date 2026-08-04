@@ -53,10 +53,10 @@ func setDemo(screen *tui.Screen, tick int) {
 	vectors := [...]struct {
 		facing, length int // facing: NESW -> 0123 (too lazy to define in code)
 	}{
-		{1, 5},
-		{2, 5},
-		{3, 5},
-		{0, 5},
+		{1, 8},
+		{2, 3},
+		{3, 8},
+		{0, 3},
 	}
 
 	pathLength := 0
