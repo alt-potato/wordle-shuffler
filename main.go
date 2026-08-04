@@ -14,7 +14,7 @@ import (
 func main() {
 	termW, termH, _ := term.GetSize(int(os.Stdout.Fd()))
 
-	// signal handeler for cmd-c exit
+	// signal handler for cmd-c exit
 	sigCh := make(chan os.Signal, 1)
 	signal.Notify(sigCh, syscall.SIGINT, syscall.SIGTERM)
 
