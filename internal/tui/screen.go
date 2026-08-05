@@ -14,6 +14,12 @@ type Cell struct {
 type Screen struct {
 	width, height int
 	cells         [][]Cell
+	// Map of whether the row has been modified since last clear.
+	// 
+	// yes, a bool is 1 byte. no, this is not the most space efficient way to do this.
+	// if you are using a monitor large enough that the size of this array is an issue,
+	// i would lightly suggest for you to stop doing that.
+	dirty         []bool 
 }
 
 func NewScreen(w, h int) *Screen {
@@ -24,14 +30,20 @@ func NewScreen(w, h int) *Screen {
 			cells[i][j] = Cell{Rune: ' ', Fg: -1, Bg: -1}
 		}
 	}
+	dirty := make([]bool, h)
 
-	return &Screen{w, h, cells}
+	return &Screen{w, h, cells, dirty}
 }
 
-// sets a specific cell coordinate, ignoring out-of-bounds coordinates.
+// Sets a specific cell coordinate, ignoring out-of-bounds coordinates.
+//
+// This function MUST be used in order to set the dirty bit of the row.
 func (s *Screen) SetCell(r, c int, ch rune, fg, bg int) {
 	if r >= 0 && r < s.height && c >= 0 && c < s.width {
 		s.cells[r][c] = Cell{Rune: ch, Fg: fg, Bg: bg}
+
+		// mark row as dirty
+		s.dirty[r] = true
 	}
 }
 
@@ -73,6 +85,11 @@ func (s *Screen) RenderDelta(prev *Screen) {
 	cursorRow, cursorCol := 0, 0
 
 	for row := 0; row < s.height; row++ {
+		// if entire line matches, skip entirely
+		if !s.dirty[row] {
+			continue // we know that rows have not been modified.
+		}
+
 		for col := 0; col < s.width; col++ {
 			currVal := s.cells[row][col]
 			prevVal := prev.cells[row][col]
@@ -106,6 +123,7 @@ func (s *Screen) Clone() *Screen {
 	for row := 0; row < s.height; row++ {
 		copy(clone.cells[row], s.cells[row])
 	}
+	copy(clone.dirty, s.dirty)
 
 	return clone
 }
@@ -116,5 +134,6 @@ func (s *Screen) Clear() {
 		for j := range s.cells[i] {
 			s.cells[i][j] = Cell{Rune: ' ', Fg: -1, Bg: -1}
 		}
+		s.dirty[i] = false; // a soft and clean boy. 
 	}
 }
