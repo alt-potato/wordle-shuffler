@@ -2,7 +2,6 @@ package main
 
 import (
 	"alt-potato/wordle-shuffler/internal/tui"
-	"strings"
 )
 
 func setDemo(screen *tui.Screen, tick int) {
@@ -54,11 +53,18 @@ func setDemo(screen *tui.Screen, tick int) {
 	}
 
 	snake := "******"
-	snake += strings.Repeat(" ", len(path)-len(snake)) // match length of path bc i'm lazy
-
 	pos := tick % len(path)
-	for _, char := range snake {
+	for i := range path {
 		pos = (pos + 1) % len(path)
+
+		var char rune
+		if i < len(snake) {
+			char = rune(snake[i])
+		} else {
+			char = ' '
+		}
+
 		screen.SetCell(path[pos].row, path[pos].col, char, -1, -1)
+		i++
 	}
 }
