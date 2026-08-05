@@ -51,7 +51,10 @@ main:
 			setDemo(screen, frameCount)
 
 			screen.RenderDelta(prevScreen)
-			screen.Swap(prevScreen)
+			
+			// swap
+			screen, prevScreen = prevScreen, screen 
+			screen.Clear()
 		}
 	}
 }

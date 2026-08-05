@@ -118,12 +118,3 @@ func (s *Screen) Clear() {
 		}
 	}
 }
-
-// Swaps the given screen buffer with the current, the clears the current buffer.
-//
-// In effect, the content of the current buffer is moved to the previous buffer, and then
-// cleared in preparation for the next frame.
-func (s *Screen) Swap(prev *Screen) {
-	prev, s = s, prev
-	s.Clear()
-}
